@@ -11,9 +11,9 @@ private val logger = KotlinLogging.logger {}
 fun main(args: Array<String>) {
     logger.warn("Starting Utopia Machine")
 
-    val fis = FileInputStream(FILE)
-    val archiveReader = WARCReaderFactory.get(FILE, fis, true)
+    val printer = LinePrinter()
 
+    val archiveReader = WARCReaderFactory.get(FILE, FileInputStream(FILE), true)
     for (record in archiveReader) {
         val header = record.header
 
@@ -23,6 +23,7 @@ fun main(args: Array<String>) {
         if (index != -1) {
             val snippet = content.snippet(index)
             logger.debug { "${header.url}: $snippet" }
+            //printer.print(header, snippet)
         }
     }
 
