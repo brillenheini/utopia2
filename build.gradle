@@ -34,3 +34,14 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+task('downloadCrawls') {
+    description 'Download crawls from commoncrawl.org using the aws tool'
+    group 'Utopia'
+
+    doLast {
+        mkdir 'data'
+        // TODO
+        //exec { commandLine 'aws s3 ...' }
+    }
+}
