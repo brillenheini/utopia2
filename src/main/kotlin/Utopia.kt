@@ -1,3 +1,5 @@
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
 import mu.KotlinLogging
 import org.apache.commons.io.IOUtils
 import org.archive.io.warc.WARCReaderFactory
@@ -13,21 +15,30 @@ fun main(args: Array<String>) {
 
     val printer = LinePrinter()
 
-    val archiveReader = WARCReaderFactory.get(FILE, FileInputStream(FILE), true)
-    for (record in archiveReader) {
-        val header = record.header
-
-        val bytes = IOUtils.toByteArray(record, record.available())
-        val content = String(bytes, Charset.forName("utf-8"))
-        val index = content.indexOf(string = "utopia", ignoreCase = true)
-        if (index != -1) {
-            val snippet = content.snippet(index)
-            logger.debug { "${header.url}: $snippet" }
-            //printer.print(header, snippet)
+    Observable.fromArray(FILE)
+        .map { WARCReaderFactory.get(it, FileInputStream(it), true) }
+        .flatMap { Observable.fromIterable(it) }
+        .map { record ->
+            val bytes = IOUtils.toByteArray(record, record.available())
+            val content = String(bytes, Charset.forName("utf-8"))
+            val index = content.indexOf(string = "utopia", ignoreCase = true)
+            val snippet = if (index != -1) content.snippet(index) else null
+            Pair(record, snippet)
         }
-    }
+        .filter { it.second != null }
+        .subscribeBy(
+            onNext = {
+                val header = it.first.header
+                val snippet = it.second
 
-    logger.warn("Utopia Machine stopped")
+                logger.debug { "${header.url}: $snippet" }
+                if (snippet != null) {
+                    printer.print(header, snippet)
+                }
+            },
+            onComplete = { logger.warn("Utopia Machine stopped") },
+            onError = { logger.error("error processing archive records", it) }
+        )
 }
 
 /**
