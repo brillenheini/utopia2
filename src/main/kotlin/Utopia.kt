@@ -3,11 +3,13 @@ import io.reactivex.rxkotlin.subscribeBy
 import mu.KotlinLogging
 import org.apache.commons.io.IOUtils
 import org.archive.io.warc.WARCReaderFactory
+import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.nio.charset.Charset
 
-private const val FILE = "data/CC-MAIN-20131204131715-00000-ip-10-33-133-15.ec2.internal.warc.wet.gz"
+private const val DATA_DIR = "../utopia2-data"
 private val logger = KotlinLogging.logger {}
 
 fun main(args: Array<String>) {
@@ -15,8 +17,12 @@ fun main(args: Array<String>) {
 
     val printer = LinePrinter()
 
-    Observable.fromArray(FILE)
-        .map { WARCReaderFactory.get(it, FileInputStream(it), true) }
+    Observable.just(DATA_DIR)
+        .flatMap { Observable.fromIterable(listFiles(it)) }
+        .map { file ->
+            logger.debug { "reading archive ${file.path}" }
+            WARCReaderFactory.get(file.path, FileInputStream(file), true)
+        }
         .flatMap { Observable.fromIterable(it) }
         .map { record ->
             val bytes = IOUtils.toByteArray(record, record.available())
@@ -52,4 +58,16 @@ private fun String.snippet(index: Int, before: Int = 100, after: Int = 100): Str
     val start = Math.max(index - before, 0)
     val end = Math.min(index + after, this.length)
     return this.substring(start, end)
+}
+
+private fun listFiles(dirName: String): List<File> {
+    val data = File(dirName)
+    if (data.exists()) {
+        val files = data.listFiles()
+        if (files != null && files.isNotEmpty()) {
+            logger.info { "found ${files.size} files in $dirName" }
+            return files.toList()
+        }
+    }
+    throw FileNotFoundException("$dirName does not exist or is empty, run ./gradlew downloadCrawls")
 }
