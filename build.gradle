@@ -42,7 +42,7 @@ task('downloadCrawls') {
     group 'Utopia'
 
     doLast {
-        mkdir 'data'
+        mkdir '../utopia2-data'
         // TODO
         //exec { commandLine 'aws s3 ...' }
     }
