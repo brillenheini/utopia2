@@ -13,6 +13,11 @@ group 'net.zweintopf'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'UtopiaKt'
+
+defaultTasks 'clean', 'run'
 
 repositories {
     jcenter()
