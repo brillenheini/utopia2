@@ -1,5 +1,8 @@
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
 import org.apache.commons.io.IOUtils
 import org.archive.io.warc.WARCReaderFactory
@@ -8,8 +11,10 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.nio.charset.Charset
+import java.util.concurrent.TimeUnit
 
 private const val DATA_DIR = "../utopia2-data"
+private const val INTERVAL = 5L
 private val logger = KotlinLogging.logger {}
 
 fun main(args: Array<String>) {
@@ -17,8 +22,8 @@ fun main(args: Array<String>) {
 
     val printer = LinePrinter()
 
-    Observable.just(DATA_DIR)
-        .flatMap { Observable.fromIterable(listFiles(it)) }
+    val searcher = Single.just(DATA_DIR)
+        .flatMapObservable { Observable.fromIterable(listFiles(it)) }
         .map { file ->
             logger.debug { "reading archive ${file.path}" }
             WARCReaderFactory.get(file.path, FileInputStream(file), true)
@@ -32,6 +37,17 @@ fun main(args: Array<String>) {
             Pair(record, snippet)
         }
         .filter { it.second != null }
+
+    val timer = Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.trampoline())
+        .doOnNext { logger.info { "tick $it" } }
+
+    Observables.zip(
+        searcher,
+        timer,
+        { pair, _ ->
+            logger.debug { "zipping" }
+            pair
+        })
         .subscribeBy(
             onNext = {
                 val header = it.first.header
