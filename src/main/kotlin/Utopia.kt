@@ -1,6 +1,5 @@
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.rxkotlin.Observables
+import io.reactivex.Flowable
+import io.reactivex.rxkotlin.Flowables
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
@@ -22,13 +21,13 @@ fun main(args: Array<String>) {
 
     val printer = LinePrinter()
 
-    val searcher = Single.just(DATA_DIR)
-        .flatMapObservable { Observable.fromIterable(listFiles(it)) }
+    val searcher = Flowable.just(DATA_DIR)
+        .flatMap { Flowable.fromIterable(listFiles(it)) }
         .map { file ->
             logger.debug { "reading archive ${file.path}" }
             WARCReaderFactory.get(file.path, FileInputStream(file), true)
         }
-        .flatMap { Observable.fromIterable(it) }
+        .flatMap { Flowable.fromIterable(it) }
         .map { record ->
             val bytes = IOUtils.toByteArray(record, record.available())
             val content = String(bytes, Charset.forName("utf-8"))
@@ -38,16 +37,18 @@ fun main(args: Array<String>) {
         }
         .filter { it.second != null }
 
-    val timer = Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.trampoline())
+    val timer = Flowable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.computation())
+        .onBackpressureDrop()
         .doOnNext { logger.info { "tick $it" } }
 
-    Observables.zip(
-        searcher,
+    Flowables.zip(
         timer,
-        { pair, _ ->
+        searcher,
+        { _, pair ->
             logger.debug { "zipping" }
             pair
         })
+        .subscribeOn(Schedulers.computation())
         .subscribeBy(
             onNext = {
                 val header = it.first.header
@@ -58,9 +59,17 @@ fun main(args: Array<String>) {
                     printer.print(header, snippet)
                 }
             },
-            onComplete = { logger.warn("Utopia Machine stopped") },
-            onError = { logger.error("error processing archive records", it) }
+            onComplete = {
+                logger.warn("Utopia Machine stopped")
+                exit()
+            },
+            onError = {
+                logger.error("error processing archive records", it)
+                exit()
+            }
         )
+
+    waitForExit()
 }
 
 /**
@@ -86,4 +95,18 @@ private fun listFiles(dirName: String): List<File> {
         }
     }
     throw FileNotFoundException("$dirName does not exist or is empty, run ./gradlew downloadCrawls")
+}
+
+private val lock = java.lang.Object()
+
+private fun waitForExit() {
+    synchronized(lock) {
+        lock.wait()
+    }
+}
+
+private fun exit() {
+    synchronized(lock) {
+        lock.notify()
+    }
 }
