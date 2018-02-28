@@ -36,6 +36,7 @@ fun main(args: Array<String>) {
             Pair(record, snippet)
         }
         .filter { it.second != null }
+    //.repeat()
 
     val timer = Flowable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.computation())
         .onBackpressureDrop()
