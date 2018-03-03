@@ -60,10 +60,7 @@ fun main(args: Array<String>) {
                     printer.print(header, snippet)
                 }
             },
-            onComplete = {
-                logger.warn("Utopia Machine stopped")
-                exit()
-            },
+            onComplete = { exit() },
             onError = {
                 logger.error("error processing archive records", it)
                 exit()
