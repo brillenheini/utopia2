@@ -13,13 +13,14 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 private const val DATA_DIR = "../utopia2-data"
-private const val INTERVAL = 5L
+private const val INTERVAL = 10L
 private val logger = KotlinLogging.logger {}
 
 fun main(args: Array<String>) {
-    logger.warn("Starting Utopia Machine")
+    logger.warn("Starting Utopia Machine 2.0")
 
     val printer = LinePrinter()
+    printer.printIntro()
 
     val searcher = Flowable.just(DATA_DIR)
         .flatMap { Flowable.fromIterable(listFiles(it)) }
@@ -57,7 +58,7 @@ fun main(args: Array<String>) {
 
                 logger.debug { "${header.url}: $snippet" }
                 if (snippet != null) {
-                    printer.print(header, snippet)
+                    printer.printSnippet(snippet, header)
                 }
             },
             onComplete = { exit() },
