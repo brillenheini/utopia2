@@ -73,6 +73,13 @@ task('downloadCrawls') {
         download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891815560.92/wet/CC-MAIN-20180224112708-20180224132708-00242.warc.wet.gz'
         // https://de.wikipedia.org/wiki/Utopia
         download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891814002.69/wet/CC-MAIN-20180222041853-20180222061853-00184.warc.wet.gz'
+
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891816370.72/wet/CC-MAIN-20180225110552-20180225130552-00001.warc.wet.gz'
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891816370.72/wet/CC-MAIN-20180225110552-20180225130552-00002.warc.wet.gz'
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891815560.92/wet/CC-MAIN-20180224112708-20180224132708-00243.warc.wet.gz'
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891815560.92/wet/CC-MAIN-20180224112708-20180224132708-00244.warc.wet.gz'
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891814002.69/wet/CC-MAIN-20180222041853-20180222061853-00185.warc.wet.gz'
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891814002.69/wet/CC-MAIN-20180222041853-20180222061853-00186.warc.wet.gz'
     }
 }
 
