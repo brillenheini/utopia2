@@ -42,14 +42,20 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+def dataDir = '../utopia2-data'
 task('downloadCrawls') {
     description 'Download crawls from commoncrawl.org using the aws tool'
     group 'Utopia'
 
     doLast {
-        mkdir '../utopia2-data'
+        delete dataDir
+        mkdir dataDir
         exec {
-            commandLine 'aws s3 --no-sign-request cp s3://commoncrawl/crawl-data/CC-MAIN-2013-48/segments/1386163035819/wet/CC-MAIN-20131204131715-00000-ip-10-33-133-15.ec2.internal.warc.wet.gz ../utopia2-data'
+            commandLine 'aws', 's3', 'cp',
+                    '--no-sign-request',
+                    '--quiet',
+                    's3://commoncrawl/crawl-data/CC-MAIN-2013-48/segments/1386163035819/wet/CC-MAIN-20131204131715-00000-ip-10-33-133-15.ec2.internal.warc.wet.gz',
+                    dataDir
         }
     }
 }
