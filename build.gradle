@@ -13,6 +13,10 @@ plugins {
     id "io.gitlab.arturbosch.detekt" version "1.0.0.RC6-3"
 }
 
+ext {
+    dataDir = "../utopia2-data"
+}
+
 group 'net.zweintopf'
 version '1.0-SNAPSHOT'
 
@@ -53,7 +57,6 @@ detekt {
     }
 }
 
-def dataDir = '../utopia2-data'
 task('downloadCrawls') {
     description 'Download crawls from commoncrawl.org using the aws tool'
     group 'Utopia'
@@ -61,12 +64,24 @@ task('downloadCrawls') {
     doLast {
         delete dataDir
         mkdir dataDir
-        exec {
-            commandLine 'aws', 's3', 'cp',
-                    '--no-sign-request',
-                    '--quiet',
-                    's3://commoncrawl/crawl-data/CC-MAIN-2013-48/segments/1386163035819/wet/CC-MAIN-20131204131715-00000-ip-10-33-133-15.ec2.internal.warc.wet.gz',
-                    dataDir
-        }
+
+        // Search for data files on http://index.commoncrawl.org/
+
+        // https://en.wikipedia.org/wiki/Utopia
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891816370.72/wet/CC-MAIN-20180225110552-20180225130552-00000.warc.wet.gz'
+        // http://www.zweintopf.net/Main/Zweintopf
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891815560.92/wet/CC-MAIN-20180224112708-20180224132708-00242.warc.wet.gz'
+        // https://de.wikipedia.org/wiki/Utopia
+        download 's3://commoncrawl/crawl-data/CC-MAIN-2018-09/segments/1518891814002.69/wet/CC-MAIN-20180222041853-20180222061853-00184.warc.wet.gz'
+    }
+}
+
+def download(url) {
+    exec {
+        commandLine 'aws', 's3', 'cp',
+                '--no-sign-request',
+                '--quiet',
+                url,
+                dataDir
     }
 }
