@@ -23,7 +23,6 @@ fun main(args: Array<String>) {
     val searcher = Flowable.merge(
         listFiles(DATA_DIR).map { createArchiveSearcher(it, searchTerms) }
     )
-    //.repeat()
 
     val timer = Flowable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.computation())
         .onBackpressureDrop()
@@ -35,6 +34,7 @@ fun main(args: Array<String>) {
             logger.trace { "tick $tick" }
             pair
         })
+        .repeat()
         .subscribeOn(Schedulers.computation())
         .subscribeBy(
             onNext = { (url, snippet) ->
