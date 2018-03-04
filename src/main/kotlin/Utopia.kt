@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit
 
 private const val DATA_DIR = "../utopia2-data"
 private const val INTERVAL = 10L
+private val searchTerms = listOf("utopia", "utopie")
 private val logger = KotlinLogging.logger {}
 
 fun main(args: Array<String>) {
@@ -32,7 +33,7 @@ fun main(args: Array<String>) {
         .map { record ->
             val bytes = IOUtils.toByteArray(record, record.available())
             val content = String(bytes, Charset.forName("utf-8"))
-            val index = content.indexOf(string = "utopia", ignoreCase = true)
+            val index = content.search()
             val snippet = if (index != -1) content.snippet(index) else null
             Pair(record, snippet)
         }
@@ -69,6 +70,19 @@ fun main(args: Array<String>) {
         )
 
     waitForExit()
+}
+
+/**
+ * Search this String for occurrences of [query] Strings
+ * and return the index if something was found or -1 otherwise.
+ */
+private fun String.search(query: List<String> = searchTerms): Int {
+    var index = -1
+    for (it in query) {
+        index = this.indexOf(string = it, ignoreCase = true)
+        if (index != -1) break
+    }
+    return index
 }
 
 /**
