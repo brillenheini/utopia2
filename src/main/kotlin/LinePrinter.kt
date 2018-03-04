@@ -9,12 +9,12 @@ class LinePrinter(private val debug: Boolean) {
         printSnippet(INTRO_URI, INTRO_SNIPPET)
     }
 
-    fun printSnippet(uri: URI, snippet: String) =
-        print("$BOLD_START$uri\n\n$snippet\n\n\n\n\n\n$BOLD_END")
+    fun printSnippet(uri: URI, snippet: String) = print("$uri\n\n$snippet\n\n\n")
 
     private fun print(text: String) {
         if (!debug) {
-            val process = ProcessBuilder("lp", "-o", "media=A5", "-")
+            // Print with custom page size A5
+            val process = ProcessBuilder("lp", "-o media=Custom.148x210mm", "-")
                 .redirectErrorStream(true)
                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .start()
@@ -32,7 +32,6 @@ class LinePrinter(private val debug: Boolean) {
     }
 
     companion object {
-        // Switching our printer to bold wastes less paper
         private const val BOLD_START = "\u001B\u0045"
         private const val BOLD_END = "\u001B\u0046"
         private const val UNDERLINE_START = "\u001b\u002d\u0001"
