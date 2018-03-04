@@ -48,7 +48,8 @@ task('downloadCrawls') {
 
     doLast {
         mkdir '../utopia2-data'
-        // TODO
-        //exec { commandLine 'aws s3 ...' }
+        exec {
+            commandLine 'aws s3 cp s3://commoncrawl/crawl-data/CC-MAIN-2014-10/segments/1394023864559/warc/CC-MAIN-20140305125104-00002-ip-10-183-142-35.ec2.internal.warc.wet.gz .'
+        }
     }
 }
