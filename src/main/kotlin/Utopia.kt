@@ -5,10 +5,12 @@ import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
 import org.apache.commons.io.IOUtils
 import org.archive.io.warc.WARCReaderFactory
+import java.awt.Desktop
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
+import java.net.URI
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
@@ -53,11 +55,14 @@ fun main(args: Array<String>) {
         .subscribeOn(Schedulers.computation())
         .subscribeBy(
             onNext = {
-                val header = it.first.header
+                val url = it.first.header?.url
                 val snippet = it.second
-                if (snippet != null) {
-                    logger.debug(header.url)
-                    printer.printSnippet(snippet, header)
+                if (url != null && snippet != null) {
+                    logger.debug(url)
+
+                    val uri = URI(url)
+                    uri.browse()
+                    printer.printSnippet(uri, snippet)
                 }
             },
             onComplete = { exit() },
@@ -94,6 +99,15 @@ private fun String.snippet(index: Int, before: Int = 100, after: Int = 100): Str
     val start = Math.max(index - before, 0)
     val end = Math.min(index + after, this.length)
     return this.substring(start, end)
+}
+
+/**
+ * Open this URI in the desktop's web browser.
+ */
+private fun URI.browse() {
+    if (Desktop.isDesktopSupported()) {
+        Desktop.getDesktop().browse(this)
+    }
 }
 
 private fun listFiles(dirName: String): List<File> {
