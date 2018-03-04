@@ -1,4 +1,3 @@
-import org.archive.io.ArchiveRecordHeader
 import java.io.BufferedWriter
 import java.io.OutputStreamWriter
 import java.net.URI
