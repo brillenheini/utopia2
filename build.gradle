@@ -9,6 +9,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "io.gitlab.arturbosch.detekt" version "1.0.0.RC6-3"
+}
+
 group 'net.zweintopf'
 version '1.0-SNAPSHOT'
 
@@ -40,6 +44,13 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+detekt {
+    version = "1.0.0.RC6-3"
+    profile("main") {
+        input = "$projectDir/src/main/kotlin"
+    }
 }
 
 def dataDir = '../utopia2-data'
