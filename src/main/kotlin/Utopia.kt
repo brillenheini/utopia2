@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
     val searcher = Flowable.just(DATA_DIR)
         .flatMap { Flowable.fromIterable(listFiles(it)) }
         .map { file ->
-            logger.debug { "reading archive ${file.path}" }
+            logger.info { "reading archive ${file.path}" }
             WARCReaderFactory.get(file.path, FileInputStream(file), true)
         }
         .flatMap { Flowable.fromIterable(it) }
@@ -42,13 +42,12 @@ fun main(args: Array<String>) {
 
     val timer = Flowable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.computation())
         .onBackpressureDrop()
-        .doOnNext { logger.info { "tick $it" } }
 
     Flowables.zip(
         timer,
         searcher,
-        { _, pair ->
-            logger.debug { "zipping" }
+        { tick, pair ->
+            logger.debug { "tick $tick" }
             pair
         })
         .subscribeOn(Schedulers.computation())
@@ -56,9 +55,8 @@ fun main(args: Array<String>) {
             onNext = {
                 val header = it.first.header
                 val snippet = it.second
-
-                logger.debug { "${header.url}: $snippet" }
                 if (snippet != null) {
+                    logger.debug(header.url)
                     printer.printSnippet(snippet, header)
                 }
             },
