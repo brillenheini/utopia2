@@ -9,6 +9,7 @@ import java.io.FileNotFoundException
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
+private const val DEBUG = false
 private const val DATA_DIR = "../utopia2-data"
 private const val INTERVAL = 10L
 private val searchTerms = listOf("utopia", "utopie")
@@ -17,7 +18,7 @@ private val logger = KotlinLogging.logger {}
 fun main(args: Array<String>) {
     logger.warn("Starting Utopia Machine 2.0")
 
-    val printer = LinePrinter()
+    val printer = LinePrinter(DEBUG)
     printer.printIntro()
 
     val searcher = Flowable.merge(
@@ -71,7 +72,7 @@ private fun listFiles(dirName: String): List<File> {
  * Open this URI in the desktop's web browser.
  */
 private fun URI.browse() {
-    if (Desktop.isDesktopSupported()) {
+    if (!DEBUG && Desktop.isDesktopSupported()) {
         Desktop.getDesktop().browse(this)
     }
 }
