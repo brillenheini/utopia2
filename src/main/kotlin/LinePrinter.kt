@@ -14,7 +14,7 @@ class LinePrinter(private val debug: Boolean) {
 
     private fun print(text: String) {
         if (!debug) {
-            val process = ProcessBuilder("lp", "-")
+            val process = ProcessBuilder("lp", "-o", "media=A5", "-")
                 .redirectErrorStream(true)
                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .start()
