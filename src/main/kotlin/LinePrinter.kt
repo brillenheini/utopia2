@@ -1,9 +1,6 @@
-import mu.KotlinLogging
 import java.io.BufferedWriter
 import java.io.OutputStreamWriter
 import java.net.URI
-
-private val logger = KotlinLogging.logger {}
 
 class LinePrinter(private val debug: Boolean) {
 
@@ -31,11 +28,6 @@ class LinePrinter(private val debug: Boolean) {
             }
 
             process.waitFor()
-        } else {
-            if (text.length > DEBUG_LENGTH)
-                logger.debug { text.substring(0, DEBUG_LENGTH) }
-            else
-                logger.debug(text)
         }
     }
 
@@ -45,8 +37,6 @@ class LinePrinter(private val debug: Boolean) {
         private const val BOLD_END = "\u001B\u0046"
         private const val UNDERLINE_START = "\u001b\u002d\u0001"
         private const val UNDERLINE_END = "\u001b\u002d\u0000"
-
-        private const val DEBUG_LENGTH = 30
 
         private val INTRO_URI = URI("https://de.wikipedia.org/wiki/Utopie")
         private val INTRO_SNIPPET = """
