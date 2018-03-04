@@ -22,7 +22,7 @@ fun createArchiveSearcher(archive: File, query: List<String>): Flowable<SearchRe
 
             archiveReader.forEach { record ->
                 val bytes = IOUtils.toByteArray(record, record.available())
-                val content = String(bytes, Charset.forName("utf-8"))
+                val content = String(bytes, Charset.forName("UTF-8"))
                 val index = content.search(query)
                 val snippet = if (index != -1) content.snippet(index) else null
                 val searchRecord = SearchRecord(record.header?.url, snippet)
