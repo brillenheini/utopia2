@@ -15,6 +15,7 @@ plugins {
 
 ext {
     dataDir = "../utopia2-data"
+    installDir = "../utopia2-bin"
 }
 
 group 'net.zweintopf'
@@ -25,7 +26,7 @@ apply plugin: 'application'
 
 mainClassName = 'UtopiaKt'
 
-defaultTasks 'clean', 'run'
+defaultTasks 'clean', 'installDist'
 
 repositories {
     jcenter()
@@ -91,4 +92,8 @@ def download(url) {
                 url,
                 dataDir
     }
+}
+
+installDist {
+    destinationDir = file(installDir)
 }
