@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger {}
 fun main(args: Array<String>) {
     logger.warn("Starting Utopia Machine 2.0")
 
-    val printer = LinePrinter(DEBUG)
+    val printer = LinePrinter(DEBUG, searchTerms)
     printer.printIntro()
 
     val searcher = Flowable.merge(
