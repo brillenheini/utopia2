@@ -1,3 +1,5 @@
+package search
+
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import mu.KotlinLogging

@@ -3,6 +3,7 @@ import io.reactivex.rxkotlin.Flowables
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
+import search.createArchiveSearcher
 import java.awt.Desktop
 import java.io.File
 import java.io.FileNotFoundException

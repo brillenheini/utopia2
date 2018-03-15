@@ -1,3 +1,5 @@
+package search
+
 /**
  * Data object passed through the rx search chain.
  */
