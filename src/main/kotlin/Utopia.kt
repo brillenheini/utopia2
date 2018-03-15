@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 private const val DEBUG = false
 private const val DATA_DIR = "../utopia2-data"
-private const val INTERVAL = 60L
+private const val INTERVAL = 90L
 private val searchTerms = listOf("utopia", "utopie")
 private val logger = KotlinLogging.logger {}
 
