@@ -17,6 +17,12 @@ private const val INTERVAL = 90L
 private val searchTerms = listOf("utopia", "utopie")
 private val logger = KotlinLogging.logger {}
 
+/**
+ * The Utopia Machine 2.0.
+ *
+ * Repeatedly search crawl data from http://commoncrawl.org/ for _utopia_
+ * and send the result to a printer and a web browser.
+ */
 fun main(args: Array<String>) {
     logger.warn("Starting Utopia Machine 2.0")
 
