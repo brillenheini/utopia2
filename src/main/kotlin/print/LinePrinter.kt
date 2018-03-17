@@ -7,7 +7,7 @@ import java.net.URI
 class LinePrinter(private val debug: Boolean, private val searchTerms: List<String>) {
 
     fun printIntro() {
-        print("${BOLD_START}Utopia Machine 2.0\n\n$BOLD_END")
+        print("$INIT${BOLD_START}Utopia Machine 2.0$BOLD_END\n\n")
         printSnippet(INTRO_URI, INTRO_SNIPPET)
     }
 
