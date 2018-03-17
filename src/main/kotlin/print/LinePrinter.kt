@@ -13,7 +13,7 @@ class LinePrinter(private val debug: Boolean, private val searchTerms: List<Stri
 
     fun printSnippet(uri: URI, snippet: String) {
         val highlighted = snippet.highlight(searchTerms)
-        print("$uri\n\n$highlighted\n\n\n")
+        print("$uri\n\n$snippet\n\n\n")
     }
 
     private fun print(text: String) {
