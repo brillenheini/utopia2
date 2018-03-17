@@ -9,7 +9,7 @@ class HighlighterTest {
     fun highlightCaseInsensitive() {
         val terms = listOf("a")
         assertEquals(
-            "${UNDERLINE_START}A${UNDERLINE_END}bb${UNDERLINE_START}a$UNDERLINE_END",
+            "${ASTERISKS}A${ASTERISKS}bb${ASTERISKS}a$ASTERISKS",
             "Abba".highlight(terms)
         )
     }
@@ -18,7 +18,7 @@ class HighlighterTest {
     fun highlightList() {
         val terms = listOf("utopia", "utopie")
         assertEquals(
-            "asdf${UNDERLINE_START}Utopia$UNDERLINE_END ${UNDERLINE_START}utopie$UNDERLINE_END xyz",
+            "asdf${ASTERISKS}Utopia$ASTERISKS ${ASTERISKS}utopie$ASTERISKS xyz",
             "asdfUtopia utopie xyz".highlight(terms)
         )
     }
