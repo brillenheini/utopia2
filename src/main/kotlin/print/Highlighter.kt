@@ -13,7 +13,7 @@ fun String.highlight(terms: List<String>): String {
     var x = this
     for (term in terms) {
         // $0 is the whole matched term
-        x = x.replace(term.toRegex(RegexOption.IGNORE_CASE), "$UNDERLINE_START$0$UNDERLINE_END")
+        x = x.replace(term.toRegex(RegexOption.IGNORE_CASE), "$BOLD_START$0$BOLD_END")
     }
     return x
 }
